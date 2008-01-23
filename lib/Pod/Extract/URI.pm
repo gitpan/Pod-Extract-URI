@@ -8,7 +8,7 @@ use URI::Find::Schemeless;
 
 use base qw(Pod::Parser);
 
-our $VERSION = '0.1';
+our $VERSION = '0.2';
 
 =pod
 
@@ -68,44 +68,44 @@ object methods described in more detail below.
 
 =over 4
 
-=item C<schemeless> (boolean, default 0)
+=item schemeless (boolean, default 0)
 
 Should the parser try to extract schemeless URIs (using C<URI::Find::Schemeless>)?
 
-=item C<L_only> (boolean, default 0)
+=item L_only (boolean, default 0)
 
 Should the parser only look for URIs in LE<lt>E<gt> sequences?
 
-=item C<textblock> (boolean, default 1)
+=item textblock (boolean, default 1)
 
-=item C<verbatim> (boolean, default 1)
+=item verbatim (boolean, default 1)
 
-=item C<command> (boolean, default 1)
+=item command (boolean, default 1)
 
 Should the parser look in POD text paragraph, verbatim blocks, or commands?
 
-=item C<schemes> (arrayref)
+=item schemes (arrayref)
 
 Restrict URIs to the schemes in the arrayref.
 
-=item C<exclude_schemes> (arrayref)
+=item exclude_schemes (arrayref)
 
 Exclude URIs with the schemes in the arrayref.
 
-=item C<stop_uris> (arrayref)
+=item stop_uris (arrayref)
 
 An arrayref of patterns to ignore.
 
-=item C<stop_sub> (coderef)
+=item stop_sub (coderef)
 
 A reference to a subroutine to run for each URI to see if the URI should
 be ignored.
 
-=item C<use_canonical> (boolean, default 0)
+=item use_canonical (boolean, default 0)
 
 Convert the URIs found to their canonical form.
 
-=item C<strip_brackets> (boolean, default 1)
+=item strip_brackets (boolean, default 1)
 
 Strip extra brackets which may appear around the URL returned by L<URI::Find>.
 See method below for more details.
@@ -350,7 +350,7 @@ sub _finder {
 Get/set the L_only flag. Takes one optional true/false argument to 
 set the L_only flag. Defaults to false.
 
-If true, C<Pod::Extract::URI> will look for URIs only in LE<lt>E<gt> 
+If true, C<Pod::Extract::URI> will look for URIs only in C<LE<lt>E<gt>>
 sequences, otherwise it will look anywhere in the POD.
 
 =cut
@@ -369,7 +369,7 @@ Get/set the want_command flag. Takes one optional true/false argument to
 set the want_command flag. Defaults to true.
 
 If true, C<Pod::Extract::URI> will look for URIs in command blocks (i.e.
-=head1, etc.).
+C<=head1>, etc.).
 
 =cut
 
@@ -485,7 +485,7 @@ sub stop_uris {
     my ( $self, $urls ) = @_;
     if ( defined $urls ) {
         if ( ref $urls eq "ARRAY" ) {
-            my @urls = map { UNIVERSAL::isa( $_, "Regexp" ) ? $_ : qr/$_/i } @$urls;
+            my @urls = map { UNIVERSAL::isa( $_, "Regexp" ) ? $_ : qr/$_/ } @$urls;
             $self->{ STOP_URLS } = \@urls;
         } else {
             carp "Argument to stop_uris() must be an arrayref";
