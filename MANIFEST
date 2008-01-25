@@ -1,14 +1,18 @@
+Build.PL
 Changes
+examples/advanced.pl
+examples/simple.pl
 lib/Pod/Extract/URI.pm
-Makefile.PL
 MANIFEST			This list of files
 README
 t/command.t
+t/int_seq.t
 t/new.t
 t/pod-coverage.t
 t/pod.t
 t/pod/blocks.pod
 t/pod/details.pod
+t/pod/int_seq.pod
 t/pod/schemes.pod
 t/pod/stop_sub.pod
 t/pod/stop_uris.pod
@@ -23,4 +27,5 @@ t/synopsis.t
 t/textblock.t
 t/uri_details.t
 t/verbatim.t
-META.yml                                 Module meta-data (added by MakeMaker)
+Makefile.PL
+META.yml

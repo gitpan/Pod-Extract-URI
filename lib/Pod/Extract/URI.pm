@@ -5,10 +5,11 @@ use warnings;
 use Carp;
 use URI::Find;
 use URI::Find::Schemeless;
+use Pod::Escapes;
 
 use base qw(Pod::Parser);
 
-our $VERSION = '0.2';
+our $VERSION = '0.3';
 
 =pod
 
@@ -190,16 +191,10 @@ sub textblock {
     my ( $self, $text, $line, $para ) = @_;
     $self->_current_line( $line, $para ); # stash current line info for callback
     if ( $self->want_textblock() ) {
-        if ( $self->L_only() ) {
-            # if we only want L<> URIs, we call interpolate() which
-            # will call the interior_sequence() method if it finds
-            # any interior sequences (such as L<>) and the
-            # interior_sequence() method will call _process() on its
-            # content only
-            $self->interpolate( $text, $line );
-        } else {
-            # otherwise we call _process() on the whole text, which
-            # will catch anything inside L<> sequences too
+        # interpolate to get interior sequence expansion
+        $text = $self->interpolate( $text, $line );
+        if ( ! $self->L_only ) {
+            # interpolate() will sort out extraction for L<> if L_only is true
             $self->_process( $text, $line );
         }
     }
@@ -232,9 +227,8 @@ sub command {
         $self->stop_uris( \@stop );
     } elsif ( $self->want_command() ) {
         # same logic as for textblock()
-        if ( $self->L_only() ) {
-            $self->interpolate( $text, $line );
-        } else {
+        $self->interpolate( $text, $line );
+        if ( ! $self->L_only() ) {
             $self->_process( $text );
         }
     }
@@ -245,11 +239,14 @@ sub command {
 # Only gets called if we call interpolate() on the containing paragraph
 
 sub interior_sequence {
-    my ( $self, $seq_cmd, $seq_arg ) = @_;
-    if ( $seq_cmd eq "L" ) {
+    my ( $self, $seq_cmd, $seq_arg, $pod_seq ) = @_;
+    if ( $seq_cmd eq "L" && $self->L_only ) {
         # if we have an L<> sequence, process it
         $self->_process( $seq_arg );
+    } elsif ( $seq_cmd eq "E" ) {
+        return Pod::Escapes::e2char( $seq_arg );
     }
+    return $seq_arg;
 }
 
 # _register_uri
